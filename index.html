@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Moda | Elegância Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6b21a8; /* Roxo Luxo */
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --gray: #f9f9f9;
+            --border: #eaeaea;
+            --font-head: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: var(--font-body); border: none; transition: 0.3s; }
+
+        /* HEADER FIXO */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; position: fixed; width: 100%; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+        .logo { font-family: var(--font-head); font-size: 32px; font-weight: 700; cursor: pointer; user-select: none; letter-spacing: 2px; color: var(--primary); }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; }
+        nav a:hover { color: var(--primary); }
+        
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .icon-btn { background: none; position: relative; }
+        .icon { width: 24px; height: 24px; stroke: var(--text); fill: none; stroke-width: 1.5; transition: 0.3s; }
+        .icon:hover { stroke: var(--primary); }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--primary); color: #fff; font-size: 10px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+
+        /* HERO BANNER */
+        .hero { height: 85vh; margin-top: 80px; background: var(--gray); position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .hero img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .hero-text { position: relative; z-index: 2; text-align: center; background: rgba(255,255,255,0.9); padding: 60px 40px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 600px; }
+        .hero h1 { font-family: var(--font-head); font-size: 48px; margin-bottom: 15px; color: var(--primary); line-height: 1.1; }
+        .hero p { font-size: 16px; margin-bottom: 30px; color: #555; }
+        .hero .btn { display: inline-block; padding: 16px 45px; background: var(--primary); color: #fff; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; font-size: 13px; transition: 0.3s; border-radius: 2px; }
+        .hero .btn:hover { background: #4c1577; transform: translateY(-2px); }
+
+        /* SEÇÕES DINÂMICAS */
+        .section-wrapper { padding: 80px 5%; max-width: 1600px; margin: 0 auto; position: relative; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .section-header h2 { font-family: var(--font-head); font-size: 36px; color: var(--primary); }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px 20px; }
+        
+        .product-card { position: relative; background: #fff; transition: 0.3s; }
+        .img-box { width: 100%; aspect-ratio: 3/4; background: var(--gray); position: relative; overflow: hidden; margin-bottom: 15px; cursor: pointer; border-radius: 4px; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .product-card:hover .img-box img { transform: scale(1.05); }
+        .img-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 13px; border: 2px dashed #ccc; text-align: center; border-radius: 4px; }
+        
+        .product-info h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+        .product-info .price { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+        .product-info .installments { font-size: 12px; color: #777; margin-bottom: 15px; }
+        
+        .btn-add-cart { width: 100%; padding: 14px; background: #fff; border: 1px solid var(--primary); color: var(--primary); font-size: 12px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border-radius: 2px; }
+        .btn-add-cart:hover { background: var(--primary); color: #fff; }
+
+        /* CARRINHO LATERAL */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+        .cart-drawer { position: fixed; top: 0; right: -450px; width: 100%; max-width: 450px; height: 100%; background: #fff; z-index: 1001; box-shadow: -10px 0 30px rgba(0,0,0,0.1); transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
+        
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 25px; border-bottom: 1px solid var(--border); }
+        .cart-header h2 { font-family: var(--font-head); font-size: 24px; color: var(--primary); }
+        .close-cart { font-size: 30px; background: none; color: #999; }
+        
+        .cart-items { flex: 1; overflow-y: auto; padding: 25px; }
+        .cart-item { display: flex; gap: 20px; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .cart-item img { width: 90px; height: 110px; object-fit: cover; border-radius: 4px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 14px; margin-bottom: 5px; font-weight: 600; }
+        .cart-item-info .price { font-size: 15px; font-weight: 700; color: var(--primary); margin-top: 8px; }
+        .remove-item { background: none; border: none; color: #ff4d4d; font-size: 12px; cursor: pointer; text-decoration: underline; margin-top: 10px; }
+        
+        .cart-footer { padding: 25px; border-top: 1px solid var(--border); background: var(--gray); }
+        .cart-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 20px; margin-bottom: 20px; color: var(--primary); }
+        .btn-checkout { width: 100%; padding: 18px; background: #25d366; color: #fff; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 10px; border-radius: 4px; }
+        .btn-checkout:hover { background: #1eb954; }
+
+        /* FOOTER */
+        footer { background: var(--primary); color: #fff; padding: 80px 5% 30px; text-align: center; }
+        footer h2 { font-family: var(--font-head); font-size: 32px; margin-bottom: 15px; }
+        footer p { font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 10px; }
+
+        /* ADMIN PANEL */
+        #adminBar { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; color: #fff; padding: 15px 20px; text-align: center; z-index: 9999; border-top: 3px solid var(--primary); justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        #adminBar button { padding: 10px 20px; background: var(--primary); color: #fff; border: none; font-weight: 600; cursor: pointer; border-radius: 4px; text-transform: uppercase; font-size: 12px; }
+        #adminBar button.btn-danger { background: #ff4d4d; }
+        #adminBar button.btn-add { background: #25d366; }
+        
+        .edit-mode [contenteditable="true"] { border: 1px dashed var(--primary); padding: 2px; background: rgba(107,33,168,0.05); outline: none; }
+        .edit-mode .img-box { border: 2px dashed var(--primary); }
+        
+        .admin-only { display: none !important; }
+        .edit-mode .admin-only { display: flex !important; }
+        
+        .btn-remove-sec, .btn-remove-prod, .btn-add-prod { padding: 8px 15px; border-radius: 4px; font-weight: bold; font-size: 11px; color: #fff; text-transform: uppercase; }
+        .btn-remove-sec { background: #ff4d4d; margin-left: 15px; }
+        .btn-remove-prod { background: #ff4d4d; width: 100%; margin-top: 10px; }
+        .btn-add-prod { background: #25d366; margin-bottom: 20px; }
+
+        .controls { display: none; gap: 15px; align-items: center; margin-left: 20px; }
+        .edit-mode .controls { display: flex; }
+        .controls label { font-size: 12px; color: #ccc; }
+        .controls input[type="color"] { width: 35px; height: 35px; border: none; cursor: pointer; background: transparent; }
+
+        @media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px 10px; }
+            nav { display: none; }
+            .hero h1 { font-size: 32px; }
+            .hero-text { padding: 40px 20px; }
+            .section-header h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- 10 CLIQUES NO LOGO PARA ABRIR O ADMIN -->
+    <div class="logo" onclick="abrirAdmin()">Ana Moda</div>
+    <nav>
+        <a>Novidades</a>
+        <a>Feminino</a>
+        <a>Acessórios</a>
+    </nav>
+    <div class="header-icons">
+        <button class="icon-btn" onclick="toggleCart()">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </div>
+</header>
+
+<section class="hero">
+    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop" class="upload-hero edit-img">
+    <div class="hero-text">
+        <h1 class="edit-text" contenteditable="false">Elegância que Veste Você.</h1>
+        <p class="edit-text" contenteditable="false">Descubra a nova coleção exclusiva. Peças únicas desenhadas para destacar a sua beleza.</p>
+        <a class="btn edit-text" contenteditable="false">Comprar Agora</a>
+    </div>
+</section>
+
+<!-- ONDE AS SEÇÕES DINÂMICAS VÃO FICAR -->
+<div id="dynamic-sections">
+    <!-- Seção 1 Inicial -->
+    <section class="section-wrapper">
+        <div class="section-header">
+            <h2 class="edit-text" contenteditable="false">Destaques da Coleção</h2>
+            <button class="btn-remove-sec admin-only" onclick="removerSecao(this)">X Remover Aba</button>
+        </div>
+        <button class="btn-add-prod admin-only" onclick="adicionarProduto(this)">+ Adicionar Novo Produto</button>
+        
+        <div class="product-grid">
+            <!-- Produto 1 -->
+            <div class="product-card">
+                <div class="img-box" onclick="triggerUpload(this)">
+                    <img src="" class="upload-img">
+                    <div class="img-placeholder">Clique para adicionar foto</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="edit-text" contenteditable="false">Vestido Midi Luxo</h3>
+                    <div class="price edit-text" contenteditable="false">R$ 289,90</div>
+                    <div class="installments edit-text" contenteditable="false">ou 3x de R$ 96,63</div>
+                    <button class="btn-add-cart" onclick="addToCart(this)">Adicionar</button>
+                    <button class="btn-remove-prod admin-only" onclick="removerProduto(this)">X Remover</button>
+                </div>
+            </div>
+            <!-- Produto 2 -->
+            <div class="product-card">
+                <div class="img-box" onclick="triggerUpload(this)">
+                    <img src="" class="upload-img">
+                    <div class="img-placeholder">Clique para adicionar foto</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="edit-text" contenteditable="false">Blazer Alfaiataria</h3>
+                    <div class="price edit-text" contenteditable="false">R$ 349,00</div>
+                    <div class="installments edit-text" contenteditable="false">ou 4x de R$ 87,25</div>
+                    <button class="btn-add-cart" onclick="addToCart(this)">Adicionar</button>
+                    <button class="btn-remove-prod admin-only" onclick="removerProduto(this)">X Remover</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <h2 class="edit-text" contenteditable="false">Ana Moda</h2>
+    <p class="edit-text" contenteditable="false">Instagram: @anamoda | WhatsApp: (11) 99999-9999</p>
+</footer>
+
+<!-- CARRINHO -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+        <h2>Sua Sacola</h2>
+        <button class="close-cart" onclick="toggleCart()">×</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <p style="text-align: center; color: #999; margin-top: 20px;">Sua sacola está vazia.</p>
+    </div>
+    <div class="cart-footer">
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cartTotal">R$ 0,00</span>
+        </div>
+        <button class="btn-checkout" onclick="checkoutWhatsApp()">
+            Finalizar no WhatsApp
+        </button>
+    </div>
+</div>
+
+<!-- INPUTS E ADMIN -->
+<input type="file" id="fileInput" accept="image/*" style="display:none;">
+<input type="file" id="fileHero" accept="image/*" style="display:none;">
+
+<div id="adminBar">
+    <span style="font-weight: 700; color: var(--primary); font-size: 14px;">⚡ MODO ADMIN</span>
+    <button onclick="salvarTudo()">Salvar Alterações</button>
+    <button class="btn-add" onclick="adicionarSecao()">+ Nova Aba</button>
+    <button class="btn-danger" onclick="sairAdmin()">Sair</button>
+    
+    <div class="controls">
+        <label>Cor Principal:</label>
+        <input type="color" id="colorPrimary" onchange="mudarCor('--primary', this.value)">
+    </div>
+</div>
+
+<script>
+    let cliquesLogo = 0;
+    let editMode = false;
+    let targetImgContainer = null;
+    let cart = [];
+    
+    // ⚠️ CONFIGURAÇÃO DO WHATSAPP
+    const WHATSAPP_NUMERO = "5511999999999"; 
+
+    // ==========================================
+    // LÓGICA DO CARRINHO (FUNCIONAL)
+    // ==========================================
+    function addToCart(btn) {
+        if(editMode) return;
+        let card = btn.closest('.product-card');
+        let nome = card.querySelector('h3').innerText;
+        let precoText = card.querySelector('.price').innerText;
+        let preco = parseFloat(precoText.replace('R$', '').replace(',', '.').trim());
+        let imgSrc = card.querySelector('img').src;
+
+        if(!imgSrc || imgSrc === window.location.href) {
+            imgSrc = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='120'><rect width='100%' height='100%' fill='%23eee'/></svg>";
+        }
+
+        let itemExistente = cart.find(item => item.nome === nome);
+        if (itemExistente) { itemExistente.qtd += 1; } 
+        else { cart.push({ nome: nome, preco: preco, qtd: 1, img: imgSrc }); }
+
+        updateCartUI();
+        toggleCart(); 
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        let cartItemsDiv = document.getElementById('cartItems');
+        let cartCount = document.getElementById('cartCount');
+        let cartTotal = document.getElementById('cartTotal');
+        
+        cartItemsDiv.innerHTML = '';
+        let total = 0;
+        let count = 0;
+
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">Sua sacola está vazia.</p>';
+        } else {
+            cart.forEach((item, index) => {
+                total += item.preco * item.qtd;
+                count += item.qtd;
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}">
+                        <div class="cart-item-info">
+                            <h4>${item.nome}</h4>
+                            <p style="font-size:12px; color:#777;">Qtd: ${item.qtd}</p>
+                            <div class="price">R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</div>
+                            <button class="remove-item" onclick="removeFromCart(${index})">Remover</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        cartCount.innerText = count;
+        cartTotal.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    function toggleCart() {
+        let drawer = document.getElementById('cartDrawer');
+        let overlay = document.getElementById('cartOverlay');
+        if (drawer.style.right === '0px') {
+            drawer.style.right = '-450px'; overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 300);
+        } else {
+            overlay.style.display = 'block'; setTimeout(() => overlay.style.opacity = '1', 10);
+            drawer.style.right = '0px';
+        }
+    }
+
+    function checkoutWhatsApp() {
+        if (cart.length === 0) { alert("Sua sacola está vazia!"); return; }
+        let msg = "Olá! Vim pelo site da Ana Moda e quero fazer o pedido:\n\n";
+        cart.forEach(item => {
+            msg += `🛍️ *${item.nome}*\nQtd: ${item.qtd}\nValor: R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}\n\n`;
+        });
+        msg += `💰 *Total:* ${cartTotal.innerText}\n\n💳 Pagamento via *Pix*.`;
+        window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ==========================================
+    // LÓGICA DO ADMIN (10 CLIQUES E GERENCIAMENTO)
+    // ==========================================
+    function abrirAdmin() {
+        cliquesLogo++;
+        if (cliquesLogo === 10) {
+            cliquesLogo = 0;
+            let senha = prompt("Senha de Administrador:");
+            if (senha === "ana123") { ativarEdicao(); } else { alert("Incorreta."); }
+        }
+        setTimeout(() => { cliquesLogo = 0; }, 3000); 
+    }
+
+    function ativarEdicao() {
+        editMode = true;
+        document.body.classList.add('edit-mode');
+        document.getElementById('adminBar').style.display = 'flex';
+        document.querySelectorAll('.edit-text').forEach(el => el.setAttribute('contenteditable', 'true'));
+        
+        // Habilita clique no banner principal
+        document.querySelector('.upload-hero').onclick = function() {
+            document.getElementById('fileHero').click();
+        };
+
+        let root = getComputedStyle(document.documentElement);
+        document.getElementById('colorPrimary').value = rgbToHex(root.getPropertyValue('--primary').trim());
+        alert("Modo Admin Ativado. Agora você pode adicionar/remover abas, produtos, e trocar fotos.");
+    }
+
+    function adicionarSecao() {
+        if(!editMode) return;
+        let container = document.getElementById('dynamic-sections');
+        let novaSecaoHTML = `
+            <section class="section-wrapper">
+                <div class="section-header">
+                    <h2 class="edit-text" contenteditable="true">Nome da Nova Aba</h2>
+                    <button class="btn-remove-sec admin-only" onclick="removerSecao(this)">X Remover Aba</button>
+                </div>
+                <button class="btn-add-prod admin-only" onclick="adicionarProduto(this)">+ Adicionar Novo Produto</button>
+                <div class="product-grid"></div>
+            </section>
+        `;
+        container.insertAdjacentHTML('beforeend', novaSecaoHTML);
+    }
+
+    function removerSecao(btn) {
+        if(!editMode) return;
+        if(confirm("Tem certeza que deseja apagar esta aba inteira?")) {
+            btn.closest('.section-wrapper').remove();
+        }
+    }
+
+    function adicionarProduto(btn) {
+        if(!editMode) return;
+        let grid = btn.nextElementSibling; // Pega a div product-grid
+        let novoProdutoHTML = `
+            <div class="product-card">
+                <div class="img-box" onclick="triggerUpload(this)">
+                    <img src="" class="upload-img">
+                    <div class="img-placeholder">Clique para adicionar foto</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="edit-text" contenteditable="true">Nome do Produto</h3>
+                    <div class="price edit-text" contenteditable="true">R$ 199,90</div>
+                    <div class="installments edit-text" contenteditable="true">ou 3x de R$ 66,63</div>
+                    <button class="btn-add-cart" onclick="addToCart(this)">Adicionar</button>
+                    <button class="btn-remove-prod admin-only" onclick="removerProduto(this)">X Remover</button>
+                </div>
+            </div>
+        `;
+        grid.insertAdjacentHTML('beforeend', novoProdutoHTML);
+    }
+
+    function removerProduto(btn) {
+        if(!editMode) return;
+        btn.closest('.product-card').remove();
+    }
+
+    function triggerUpload(container) {
+        if (!editMode) return;
+        targetImgContainer = container;
+        document.getElementById('fileInput').click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file && targetImgContainer) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let img = targetImgContainer.querySelector('img');
+                let placeholder = targetImgContainer.querySelector('.img-placeholder');
+                img.src = e.target.result;
+                if(placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Upload do Banner Principal
+    document.getElementById('fileHero').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.upload-hero').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function mudarCor(variavel, valor) {
+        document.documentElement.style.setProperty(variavel, valor);
+    }
+
+    function rgbToHex(rgb) {
+        if (!rgb.startsWith('rgb')) return rgb;
+        let a = rgb.split("(")[1].split(")")[0].split(",");
+        return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length == 1) ? "0" + x : x; }).join("");
+    }
+
+    // SALVAR TUDO NO NAVEGADOR
+    function salvarTudo() {
+        // Pegamos o HTML inteiro da área dinâmica e do topo
+        let dados = {
+            headerHTML: document.querySelector('header').innerHTML,
+            heroHTML: document.querySelector('.hero').innerHTML,
+            dynamicHTML: document.getElementById('dynamic-sections').innerHTML,
+            footerHTML: document.querySelector('footer').innerHTML,
+            corPrimary: document.getElementById('colorPrimary').value
+        };
+        
+        try {
+            localStorage.setItem('anaModaMaster', JSON.stringify(dados));
+            alert("Site salvo com sucesso! As abas e produtos foram guardados.");
+            sairAdmin();
+        } catch (e) {
+            alert("Erro: Você colocou muitas fotos pesadas. O limite é 5MB. Tente fotos menores.");
+        }
+    }
+
+    function sairAdmin() {
+        editMode = false;
+        document.body.classList.remove('edit-mode');
+        document.getElementById('adminBar').style.display = 'none';
+        // Remove contenteditable de tudo para segurança
+        document.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    }
+
+    // CARREGAR O SITE QUANDO ABRIR
+    window.onload = function() {
+        let salvo = localStorage.getItem('anaModaMaster');
+        if (salvo) {
+            let c = JSON.parse(salvo);
+            
+            // Restaura os blocos HTML
+            if(c.headerHTML) document.querySelector('header').innerHTML = c.headerHTML;
+            if(c.heroHTML) document.querySelector('.hero').innerHTML = c.heroHTML;
+            if(c.dynamicHTML) document.getElementById('dynamic-sections').innerHTML = c.dynamicHTML;
+            if(c.footerHTML) document.querySelector('footer').innerHTML = c.footerHTML;
+            
+            if(c.corPrimary) document.documentElement.style.setProperty('--primary', c.corPrimary);
+            
+            // Re-vincula os eventos de clique que foram perdidos ao salvar o HTML
+            document.querySelector('.logo').onclick = abrirAdmin;
+            document.querySelector('.icon-btn').onclick = toggleCart;
+            document.querySelectorAll('.upload-hero').forEach(img => {
+                img.onclick = function() { document.getElementById('fileHero').click(); }
+            });
+            document.querySelectorAll('.btn-add-cart').forEach(btn => {
+                btn.onclick = function() { addToCart(this); }
+            });
+            document.querySelectorAll('.img-box').forEach(box => {
+                box.onclick = function() { triggerUpload(this); }
+            });
+            document.querySelectorAll('.btn-remove-sec').forEach(btn => {
+                btn.onclick = function() { removerSecao(this); }
+            });
+            document.querySelectorAll('.btn-remove-prod').forEach(btn => {
+                btn.onclick = function() { removerProduto(this); }
+            });
+            document.querySelectorAll('.btn-add-prod').forEach(btn => {
+                btn.onclick = function() { adicionarProduto(this); }
+            });
+        }
+    };
+</script>
+</body>
+</html>
